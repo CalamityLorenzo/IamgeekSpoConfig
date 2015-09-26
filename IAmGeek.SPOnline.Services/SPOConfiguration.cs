@@ -4,6 +4,7 @@ using IAmGeek.SPOnline.Interfaces;
 using IAmGeek.SPOnline.Services;
 using IAmGeek.SPOnline.Services.Extensions;
 using Microsoft.Online.SharePoint.TenantAdministration;
+using Microsoft.SharePoint.Client.Search.Query;
 using Microsoft.SharePoint.Client.Taxonomy;
 using Microsoft.SharePoint.Client.UserProfiles;
 using System;
@@ -18,6 +19,7 @@ namespace IAmGeek.SPOnline
     {
         // Config instance members
         private static IConfigBuilder _configMaster;
+
         private static IConfigBuilder Config
         {
             get
@@ -33,10 +35,24 @@ namespace IAmGeek.SPOnline
         public static void StartUp()
         {
 
+            if (_globalValidation != null)
+            {
+                _globalValidation(_globalConfig());
+            }
+
+            if(_appConfigValidation != null)
+            {
+                foreach (var funcItem in _appConfig)
+                {
+                    _appConfigValidation(funcItem());
+
+                }
+            }
+
             Config = new ConfigInstance(SPOConfiguration._globalConfig());
             // call some magic stuff here
             // User set properties
-            foreach (var AppDetails in _appendAppConfig)
+            foreach (var AppDetails in _appConfig)
             {
                 Config.Properties.AddEntriesToDictionary(AppDetails());
             }
@@ -56,6 +72,10 @@ namespace IAmGeek.SPOnline
             Config.ServiceData.Add(typeof(Tenant), () =>
             {
                 return new Tenant(Config.GlobalContext);
+            });
+
+            Config.ServiceData.Add(typeof(SearchExecutor), () => {
+                return new SearchExecutor(Config.GlobalContext);
             });
         }
 
@@ -81,13 +101,13 @@ namespace IAmGeek.SPOnline
         }
 
         // MIscellanous Data stored before the app is properly started
-        private static ICollection<Func<IDictionary<string, string>>> _appendAppConfig = new List<Func<IDictionary<string, string>>>();
+        private static ICollection<Func<IDictionary<string, string>>> _appConfig = new List<Func<IDictionary<string, string>>>();
         public static void AddApplicationProperties(Func<IDictionary<string, string>> options)
         {
             // Append to store if before config, or just invoke it on the object
             if (Config == null)
             {
-                _appendAppConfig.Add(options);
+                _appConfig.Add(options);
             }
             else
             {
@@ -100,15 +120,6 @@ namespace IAmGeek.SPOnline
         {
             return Config.ObjectData[typeof(T)] as T;
         }
-
-        public static void DisposeContext()
-        {
-            if (Config != null)
-            {
-                Config.Dispose();
-            }
-        }
-
 
         public static string GetAppProperty(string PropertyName)
         {
@@ -130,9 +141,7 @@ namespace IAmGeek.SPOnline
         public static T GetService<T>() where T : class
         {
             return Config.ServiceData[typeof(T)]() as T;
-
         }
-
 
         /// <summary>
         /// Creates a service action, 
@@ -145,7 +154,26 @@ namespace IAmGeek.SPOnline
         public static AppOperation CreateServiceAction(string Name, string Description, Func<IConfigBuilder, bool> Actions)
         {
             return new AppOperation(Config, Name, Description, Actions);
+        }
 
+        static Func<GlobalOptions, bool> _globalValidation;
+        public static void SetValidateGlobalOptions(Func<GlobalOptions, bool> validator)
+        {
+            _globalValidation = validator;
+        }
+        static Func<IDictionary<string, string>, bool> _appConfigValidation;
+        public static void SetValidateAppOptions(Func<IDictionary<string,string>, bool> validator)
+        {
+            _appConfigValidation = validator;
+        }
+
+
+        public static void DisposeContext()
+        {
+            if (Config != null)
+            {
+                Config.Dispose();
+            }
         }
     }
 }

@@ -94,7 +94,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Interfaces\ConfigBase.cs" />
-    <Compile Include="ConfigMaster.cs" />
+    <Compile Include="ConfigInstance.cs" />
     <Compile Include="Executors\SiteColManagement.cs" />
     <Compile Include="Extensions\ExtMethods.cs" />
     <Compile Include="GlobalOptions.cs" />

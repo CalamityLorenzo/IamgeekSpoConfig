@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace IAmGeek.SPOnline.Configurations
 {
-   public class ConfigInstance : ConfigBase, IDisposable
+    public class ConfigInstance : ConfigBase, IDisposable
     {
         // Application Aka SiteCollection config info
         private readonly IDictionary<string, string> appConfig;
@@ -21,6 +21,9 @@ namespace IAmGeek.SPOnline.Configurations
 
         // Not ready for use yet
         private readonly IEnumerable<IEnumerable<AppOperation>> _actionStack;
+        /// <summary>
+        /// Tenancy level SharePoint context
+        /// </summary>
         private readonly ClientContext _globalContext;
 
         public override IDictionary<string, string> Properties
@@ -63,15 +66,14 @@ namespace IAmGeek.SPOnline.Configurations
             }
         }
 
-        public ConfigInstance( GlobalOptions GlobalOptions) :base(GlobalOptions) {
+        public ConfigInstance(GlobalOptions GlobalOptions) : base(GlobalOptions)
+        {
             this.appConfig = new Dictionary<string, string>();
-           
             this.objectData = new Dictionary<Type, object>();
             this.serviceData = new Dictionary<Type, Func<ClientObject>>();
             this._globalContext = new ClientContext(this.Options.AdminSiteCollection);
             this._globalContext.Credentials = Utils.SPOCredentials(this.Options.UserName, this.Options.UserPassword);
         }
-
 
         public override void Dispose()
         {

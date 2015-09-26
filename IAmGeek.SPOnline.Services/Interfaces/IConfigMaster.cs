@@ -14,7 +14,6 @@ namespace IAmGeek.SPOnline.Interfaces
         IDictionary<Type, Func<ClientObject>> ServiceData { get; }
         ClientContext GlobalContext { get; }
         GlobalOptions Options { get; }
-
     }
 
   

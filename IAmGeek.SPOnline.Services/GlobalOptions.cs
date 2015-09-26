@@ -17,13 +17,12 @@ namespace IAmGeek.SPOnline.Config
             this.UserName = userName;
             this.UserPassword = passWord;
             this.AdminSiteCollection = adminSiteCollection;
-                
         }
+
         [DataMember]
         internal string UserName { get; set; }
         [DataMember]
         internal string UserPassword { get; set; }
-
         [DataMember]
         internal string AdminSiteCollection { get; set; }
      }

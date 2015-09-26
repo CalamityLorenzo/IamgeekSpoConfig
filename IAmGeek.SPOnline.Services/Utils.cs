@@ -50,7 +50,6 @@ namespace IAmGeek.SPOnline.Services
 
         }
 
-
         internal static Func<GlobalOptions> BasicOptions()
         {
             return () => new GlobalOptions();

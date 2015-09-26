@@ -15,16 +15,21 @@ namespace IAmGeek.SPOnline.Services
     {
         private readonly IConfigBuilder Config;
 
-        private readonly Func<IConfigBuilder, bool> task;
-        
-        public AppOperation(string Name, string Description) {
+        private readonly Func<IConfigBuilder, bool> appOperation;
+
+        public string Name { get; private set; }
+
+        public string Description { get; private set; }
+
+        public AppOperation(string Name, string Description)
+        {
             this.Name = Name;
             this.Description = Description;
         }
 
-        public AppOperation(string Name, string Description, Func<IConfigBuilder, bool> serviceTask):this(Name, Description)
+        public AppOperation(string Name, string Description, Func<IConfigBuilder, bool> appOperation) : this(Name, Description)
         {
-            task = serviceTask;
+            this.appOperation = appOperation;
         }
 
         internal AppOperation(IConfigBuilder configOptions, string Name, string Description) : this(Name, Description)
@@ -32,23 +37,35 @@ namespace IAmGeek.SPOnline.Services
             Config = configOptions;
         }
 
-        internal AppOperation(IConfigBuilder configOptions, string Name, string Description, Func<IConfigBuilder, bool> serviceTask) : this(Name, Description, serviceTask)
+        internal AppOperation(IConfigBuilder configOptions, string Name, string Description, Func<IConfigBuilder, bool> appOperation) : this(Name, Description, appOperation)
         {
             this.Config = configOptions;
         }
 
-        public string Name { get; private set; }
+        public virtual bool Execute()
+        {
 
-        public string Description { get; private set; }
-
-        public virtual bool Execute() {
-
-            if (task != null)
+            if (appOperation != null)
             {
-                return task(this.Config);
+                return appOperation(this.Config);
             }
 
             return false;
+        }
+
+        public virtual Task<bool> ExecuteAsync()
+        {
+
+            Task<bool> TaskExecutor;
+            if (appOperation != null){
+                TaskExecutor = new Task<bool>(() => appOperation(this.Config));
+            }
+            else
+            {
+                TaskExecutor = new Task<bool>(() => false);
+            }
+
+            return TaskExecutor;
         }
 
         public override string ToString()
