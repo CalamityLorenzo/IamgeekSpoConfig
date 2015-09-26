@@ -104,7 +104,7 @@
     <Compile Include="AppOperation.cs" />
     <Compile Include="Executors\SiteManagement.cs" />
     <Compile Include="Executors\TaxonomyManangement.cs" />
-    <Compile Include="StaticConf.cs" />
+    <Compile Include="SPOConfiguration.cs" />
     <Compile Include="Utils.cs" />
   </ItemGroup>
   <ItemGroup>
