@@ -18,14 +18,5 @@ namespace IAmGeek.SPOnline.Services.Registrations
 
         }
 
-        public override object ReturnService()
-        {
-            throw new NullReferenceException();
-        }
-
-        public override object ReturnService(ClientContext ctx)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

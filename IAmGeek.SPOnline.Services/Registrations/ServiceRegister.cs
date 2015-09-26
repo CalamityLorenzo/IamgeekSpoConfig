@@ -18,10 +18,6 @@ namespace IAmGeek.SPOnline.Services.Registrations
             this.credentials = creds;
         }
 
-        public abstract object ReturnService();
-
-        public abstract object ReturnService(sp.ClientContext ctx);
-
         protected T InstantiateService<T>(Func<sp.ClientContext,T> GetService) where T : sp.ClientObject
         {
             if (ctx == null)

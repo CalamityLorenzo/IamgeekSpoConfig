@@ -68,7 +68,7 @@ namespace IAmGeek.SPOnline.Services
             Tenant.Context.Load(longOperation);
             Tenant.Context.ExecuteQuery();
 
-            Utils.WaitForOpreration(longOperation, "Create site");
+            Utils.WaitForOperation(longOperation, "Create site");
             return true;
 
         }
@@ -79,14 +79,14 @@ namespace IAmGeek.SPOnline.Services
 
             Tenant.Context.Load(deleteOperation);
             Tenant.Context.ExecuteQuery();
-            Utils.WaitForOpreration(deleteOperation, "Deleting Site");
+            Utils.WaitForOperation(deleteOperation, "Deleting Site");
 
             if (EmptyRecycleBin)
             {
                 var emptyBin = Tenant.RemoveDeletedSite(SiteCollection);
                 Tenant.Context.Load(emptyBin);
                 Tenant.Context.ExecuteQuery();
-                Utils.WaitForOpreration(emptyBin, "Emptying Site from Recycle bin");
+                Utils.WaitForOperation(emptyBin, "Emptying Site from Recycle bin");
             }
             return true;
         }

@@ -25,14 +25,7 @@ namespace IAmGeek.SPOnline.Services
             return new SharePointOnlineCredentials(username, securePass);
         }
 
-        internal static Func<GlobalOptions> BasicOptions()
-        {
-            return () => new GlobalOptions();
-        }
-
-
-
-        internal static void WaitForOpreration(SpoOperation longRunningOperation, String operation = "")
+        internal static void WaitForOperation(SpoOperation longRunningOperation, String operation = "")
         {
             if (!string.IsNullOrEmpty(operation))
             {
@@ -57,6 +50,11 @@ namespace IAmGeek.SPOnline.Services
 
         }
 
+
+        internal static Func<GlobalOptions> BasicOptions()
+        {
+            return () => new GlobalOptions();
+        }
     }
 
    

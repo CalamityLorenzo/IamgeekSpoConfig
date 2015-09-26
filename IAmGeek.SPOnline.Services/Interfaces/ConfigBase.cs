@@ -1,22 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.SharePoint.Client;
-using IAmGeek.SPOnline.Config;
+﻿using IAmGeek.SPOnline.Config;
 using IAmGeek.SPOnline.Services;
+using Microsoft.SharePoint.Client;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace IAmGeek.SPOnline.Interfaces
 {
-    public interface IConfigBuilder : IDisposable
-    {
-        IEnumerable<IEnumerable<AppOperation>> ActionStack { get; }
-        IDictionary<string, string> Properties { get; }
-        IDictionary<Type, object> ObjectData { get; }
-        IDictionary<Type, Func<ClientObject>> ServiceData { get; }
-        ClientContext GlobalContext { get; }
-        GlobalOptions Options { get; }
-
-    }
-
     public abstract class ConfigBase : IConfigBuilder
     {
         private readonly GlobalOptions _globalOptions;
@@ -55,7 +47,7 @@ namespace IAmGeek.SPOnline.Interfaces
             {
                 return _globalOptions;
             }
-           
+
         }
 
         public virtual IDictionary<string, string> Properties
