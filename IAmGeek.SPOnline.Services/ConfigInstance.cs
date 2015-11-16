@@ -15,7 +15,7 @@ namespace IAmGeek.SPOnline.Configurations
         // Application Aka SiteCollection config info
         private readonly IDictionary<string, string> appConfig;
         //
-        private readonly IDictionary<Type, Func<ClientObject>> serviceData;
+        private readonly IDictionary<Type, Func<ClientObject>> _serviceData;
         // For passing data between action processors
         private readonly IDictionary<Type, object> objectData;
 
@@ -34,12 +34,14 @@ namespace IAmGeek.SPOnline.Configurations
             }
         }
 
-        public override IDictionary<Type, Func<ClientObject>> ServiceData
+        public override T GetService<T>() 
         {
-            get
-            {
-                return serviceData;
-            }
+            return _serviceData[typeof(T)]() as T;
+        }
+
+        public override void AddService<T>( Func<T> service) 
+        {
+            this._serviceData.Add(typeof(T), service);
         }
 
         public override IDictionary<Type, object> ObjectData
@@ -70,7 +72,7 @@ namespace IAmGeek.SPOnline.Configurations
         {
             this.appConfig = new Dictionary<string, string>();
             this.objectData = new Dictionary<Type, object>();
-            this.serviceData = new Dictionary<Type, Func<ClientObject>>();
+            this._serviceData = new Dictionary<Type, Func<ClientObject>>();
             this._globalContext = new ClientContext(this.Options.AdminSiteCollection);
             this._globalContext.Credentials = Utils.SPOCredentials(this.Options.UserName, this.Options.UserPassword);
         }

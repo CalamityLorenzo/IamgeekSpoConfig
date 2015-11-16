@@ -13,9 +13,9 @@ namespace IAmGeek.SPOnline.Services
     /// </summary>
     public class AppOperation
     {
-        private readonly IConfigBuilder Config;
+        private readonly IUserInfo Config;
 
-        private readonly Func<IConfigBuilder, bool> appOperation;
+        private readonly Func<IUserInfo, bool> appOperation;
 
         public string Name { get; private set; }
 
@@ -27,17 +27,17 @@ namespace IAmGeek.SPOnline.Services
             this.Description = Description;
         }
 
-        public AppOperation(string Name, string Description, Func<IConfigBuilder, bool> appOperation) : this(Name, Description)
+        public AppOperation(string Name, string Description, Func<IUserInfo, bool> appOperation) : this(Name, Description)
         {
             this.appOperation = appOperation;
         }
 
-        internal AppOperation(IConfigBuilder configOptions, string Name, string Description) : this(Name, Description)
+        internal AppOperation(IUserInfo configOptions, string Name, string Description) : this(Name, Description)
         {
             Config = configOptions;
         }
 
-        internal AppOperation(IConfigBuilder configOptions, string Name, string Description, Func<IConfigBuilder, bool> appOperation) : this(Name, Description, appOperation)
+        internal AppOperation(IUserInfo configOptions, string Name, string Description, Func<IUserInfo, bool> appOperation) : this(Name, Description, appOperation)
         {
             this.Config = configOptions;
         }

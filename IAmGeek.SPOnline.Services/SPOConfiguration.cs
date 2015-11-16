@@ -4,6 +4,7 @@ using IAmGeek.SPOnline.Interfaces;
 using IAmGeek.SPOnline.Services;
 using IAmGeek.SPOnline.Services.Extensions;
 using Microsoft.Online.SharePoint.TenantAdministration;
+using Microsoft.SharePoint.Client;
 using Microsoft.SharePoint.Client.Search.Query;
 using Microsoft.SharePoint.Client.Taxonomy;
 using Microsoft.SharePoint.Client.UserProfiles;
@@ -18,9 +19,9 @@ namespace IAmGeek.SPOnline
     public static class SPOConfiguration
     {
         // Config instance members
-        private static IConfigBuilder _configMaster;
+        private static ConfigBase _configMaster;
 
-        private static IConfigBuilder Config
+        private static ConfigBase Config
         {
             get
             {
@@ -35,11 +36,11 @@ namespace IAmGeek.SPOnline
         public static void StartUp()
         {
 
+            // Test for option validators
             if (_globalValidation != null)
             {
                 _globalValidation(_globalConfig());
             }
-
             if(_appConfigValidation != null)
             {
                 foreach (var funcItem in _appConfig)
@@ -57,24 +58,24 @@ namespace IAmGeek.SPOnline
                 Config.Properties.AddEntriesToDictionary(AppDetails());
             }
 
-            Config.ServiceData.Add(typeof(TaxonomySession), () =>
+            Config.AddService(() =>
             {
-                var ts = TaxonomySession.GetTaxonomySession(Config.GlobalContext);
+                TaxonomySession ts = TaxonomySession.GetTaxonomySession(Config.GlobalContext);
                 Config.GlobalContext.Load(ts);
                 return ts;
             });
 
-            Config.ServiceData.Add(typeof(PeopleManager), () =>
+            Config.AddService(() =>
             {
                 return new PeopleManager(Config.GlobalContext);
             });
 
-            Config.ServiceData.Add(typeof(Tenant), () =>
+            Config.AddService(() =>
             {
                 return new Tenant(Config.GlobalContext);
             });
 
-            Config.ServiceData.Add(typeof(SearchExecutor), () => {
+            Config.AddService(() => {
                 return new SearchExecutor(Config.GlobalContext);
             });
         }
@@ -138,9 +139,9 @@ namespace IAmGeek.SPOnline
             }
         }
 
-        public static T GetService<T>() where T : class
+        public static T GetService<T>() where T : ClientObject
         {
-            return Config.ServiceData[typeof(T)]() as T;
+            return Config.GetService<T>() as T;
         }
 
         /// <summary>
@@ -151,7 +152,7 @@ namespace IAmGeek.SPOnline
         /// <param name="Description"></param>
         /// <param name="Actions"></param>
         /// <returns></returns>
-        public static AppOperation CreateServiceAction(string Name, string Description, Func<IConfigBuilder, bool> Actions)
+        public static AppOperation CreateServiceAction(string Name, string Description, Func<IUserInfo, bool> Actions)
         {
             return new AppOperation(Config, Name, Description, Actions);
         }
@@ -166,7 +167,6 @@ namespace IAmGeek.SPOnline
         {
             _appConfigValidation = validator;
         }
-
 
         public static void DisposeContext()
         {

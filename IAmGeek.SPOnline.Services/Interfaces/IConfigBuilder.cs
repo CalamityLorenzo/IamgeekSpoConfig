@@ -6,15 +6,18 @@ using IAmGeek.SPOnline.Services;
 
 namespace IAmGeek.SPOnline.Interfaces
 {
-    public interface IConfigBuilder : IDisposable
+    public interface IConfigBuilder : IUserInfo, IDisposable
     {
         IEnumerable<IEnumerable<AppOperation>> ActionStack { get; }
-        IDictionary<string, string> Properties { get; }
         IDictionary<Type, object> ObjectData { get; }
-        IDictionary<Type, Func<ClientObject>> ServiceData { get; }
-        ClientContext GlobalContext { get; }
-        GlobalOptions Options { get; }
-    }
 
+    }
+    
+    public interface IUserInfo
+    {
+        GlobalOptions Options { get; }
+        IDictionary<string, string> Properties { get; }
+        T GetService<T>() where T : ClientObject;
+    }
   
 }

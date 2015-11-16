@@ -58,13 +58,11 @@ namespace IAmGeek.SPOnline.Interfaces
             }
         }
 
-        public virtual IDictionary<Type, Func<ClientObject>> ServiceData
-        {
-            get
-            {
-                throw new NotImplementedException();
-            }
-        }
+        public abstract void AddService<T>(Func<T> service) where T : ClientObject;
+
+        public virtual T GetService<T>() where T : ClientObject
+        { throw new NotImplementedException(); }
+
 
         public virtual void Dispose()
         {

@@ -98,7 +98,7 @@
     <Compile Include="Executors\SiteColManagement.cs" />
     <Compile Include="Extensions\ExtMethods.cs" />
     <Compile Include="GlobalOptions.cs" />
-    <Compile Include="Interfaces\IConfigMaster.cs" />
+    <Compile Include="Interfaces\IConfigBuilder.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Registrations\ServiceRegister.cs" />
     <Compile Include="Registrations\SPOnlineUserProfile.cs" />

@@ -18,14 +18,5 @@ namespace IAmGeek.SPOnline.Services.Extensions
             }
 
         }
-
-        public static List CreateOpenUniDocLibrary(this SiteColManagement siteCol, string address, string listName)
-        {
-            return siteCol.CreateNewCustomList(address, listName, listName.Replace(" ",""), 10001, Guid.Parse("f7cd43d1-a362-4da9-b512-ca0d4e93b98b"));
-        }
-        public static List CreateOpenUniDocLibrary(this SiteColManagement siteCol, string address, string listName, string listAddress)
-        {
-            return siteCol.CreateNewCustomList(address, listName, listAddress, 10001, Guid.Parse("f7cd43d1-a362-4da9-b512-ca0d4e93b98b"));
-        }
     }
 }

@@ -82,17 +82,48 @@ namespace IAmGeek.SPOnline.Services
                 var existingTermSet = existingGroup.TermSets.FirstOrDefault(o => o.Name == termSet.Item2);
                 if (existingTermSet != null)
                 {
-                    Console.WriteLine("Term set exists : {0}", termSet.Item2);
+                    Console.WriteLine("Term set exists : '{0}'", termSet.Item2);
                 }
                 else
                 {
-                    Console.WriteLine("Creating : {0}", termSet.Item2);
+                    Console.WriteLine("Creating : '{0}'", termSet.Item2);
                     existingGroup.CreateTermSet(termSet.Item2, termSet.Item3, 1033);
                 }
             }
 
             adminStore.CommitAll();
             this.ts.Context.ExecuteQuery();
+        }
+
+        /// <summary>
+        /// Creates terms at the root of a termset
+        /// </summary>
+        /// <param name="TermSetId"></param>
+        /// <param name="TermInfo"></param>
+        public void CreateTermSetTerms(Guid TermSetId, IEnumerable<Tuple<string,Guid>> TermInfo)
+        {
+            var adminStore = ts.GetDefaultKeywordsTermStore();
+            var adminGroups = LoadAdminStore(adminStore);
+
+            var termSet = adminStore.GetTermSet(TermSetId);
+            ts.Context.Load(termSet, ts=>ts.Terms, ts=>ts.Terms.Include(o=>o.Id, o=>o.Name));
+            ts.Context.ExecuteQuery();
+            foreach(var term in TermInfo)
+            {
+                var existingTerm = termSet.Terms.FirstOrDefault(o => o.Id == term.Item2);
+                if (existingTerm == null)
+                {
+                    Console.WriteLine("Creating term : '{0}'", term.Item1);
+                    termSet.CreateTerm(term.Item1, 1033, term.Item2);
+                }
+                else
+                {
+                    Console.WriteLine("Term exists: '{0}'", term.Item1);
+                }
+            }
+
+            ts.Context.ExecuteQuery();
+
         }
 
         public void ImportTermsData(IEnumerable<string> pathData, string GroupName, string termSetName)
